@@ -1,0 +1,24 @@
+@import "variable";
+
+$primary-palette: (
+  100: #a5b9ff,
+  500: $primary,
+  contrast: (
+    500: $white,
+  ),
+);
+
+$accent-palette: (
+  100: #78e8b2,
+  500: $accent,
+  contrast: (
+    500: $white,
+  ),
+);
+
+$warn-palette: (
+  500: $accent,
+  contrast: (
+    500: $white,
+  ),
+);
