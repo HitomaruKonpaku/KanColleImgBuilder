@@ -36,7 +36,7 @@ export class KanColleBuilderComponent extends BaseComponent {
     })
 
     try {
-      const canvas = await gkcoi(deck);
+      const canvas = await gkcoi(deck)
       this.container.appendChild(canvas)
     } catch (error) {
       throw error

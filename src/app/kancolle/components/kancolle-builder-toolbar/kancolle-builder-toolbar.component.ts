@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { BaseComponent } from '../../../base/base.component';
-import { KanColleBuilderService } from '../../services/kancolle-builder.service';
+import { Component, EventEmitter, Output } from '@angular/core'
+import { FormBuilder, FormGroup } from '@angular/forms'
+import { BaseComponent } from '../../../base/base.component'
+import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
 @Component({
   selector: 'app-kancolle-builder-toolbar',
@@ -9,9 +9,9 @@ import { KanColleBuilderService } from '../../services/kancolle-builder.service'
   styleUrls: ['./kancolle-builder-toolbar.component.scss'],
 })
 export class KanColleBuilderToolbarComponent extends BaseComponent {
-  @Output() generate = new EventEmitter();
+  @Output() generate = new EventEmitter()
 
-  public title: string;
+  public title: string
   public formGroup!: FormGroup
 
   constructor(
