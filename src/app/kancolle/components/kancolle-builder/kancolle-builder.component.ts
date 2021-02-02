@@ -48,8 +48,18 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   async onInit() {
     this.container = document.getElementById(KanColleConstant.BUILDER_CANVAS_CONTAINER_ID) as HTMLElement
+
     const params = this.route.snapshot.queryParams
-    this.deck = JSON.parse(params.deck || {})
-    await this.generate()
+    const deckValue = params.deck
+    if (!deckValue) {
+      return
+    }
+
+    try {
+      this.deck = JSON.parse(deckValue)
+      await this.generate()
+    } catch (error) {
+      //
+    }
   }
 }
