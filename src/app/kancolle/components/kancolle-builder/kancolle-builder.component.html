@@ -1,0 +1,18 @@
+<section class="kancolle-builder">
+  <div class="kancolle-builder-header">
+    <app-kancolle-builder-toolbar (generate)="generate()"></app-kancolle-builder-toolbar>
+
+    <mat-progress-bar
+      *ngIf="isLoading"
+      mode="buffer"
+      color="primary"
+    ></mat-progress-bar>
+  </div>
+
+  <div class="kancolle-builder-content">
+    <div
+      id="canvas-container"
+      class="canvas-container"
+    ></div>
+  </div>
+</section>

@@ -1,0 +1,51 @@
+<section class="kancolle-builder-toolbar">
+  <mat-toolbar>
+    <span class="title">{{ title }}</span>
+
+    <form
+      class="form"
+      [formGroup]="formGroup"
+      (submit)="submit()"
+    >
+      <span class="checkbox-container">
+        <mat-checkbox
+          formControlName="f1"
+          color="primary"
+        >
+          #1
+        </mat-checkbox>
+
+        <mat-checkbox
+          formControlName="f2"
+          color="primary"
+        >
+          #2
+        </mat-checkbox>
+
+        <mat-checkbox
+          formControlName="f3"
+          color="primary"
+        >
+          #3
+        </mat-checkbox>
+
+        <mat-checkbox
+          formControlName="f4"
+          color="primary"
+        >
+          #4
+        </mat-checkbox>
+      </span>
+
+      <span class="action-container">
+        <button
+          mat-raised-button
+          type="submit"
+          color="primary"
+        >
+          Generate
+        </button>
+      </span>
+    </form>
+  </mat-toolbar>
+</section>

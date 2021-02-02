@@ -1,0 +1,31 @@
+@import "../../../../assets/scss/variable";
+
+.kancolle-builder-toolbar {
+  .mat-toolbar {
+    background: #202225;
+    color: $white;
+  }
+
+  .title {
+    text-transform: uppercase;
+  }
+
+  .form {
+    display: flex;
+    margin-left: 40px;
+
+    .checkbox-container {
+      .mat-checkbox {
+        margin-left: 16px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .action-container {
+      margin-left: 24px;
+    }
+  }
+}

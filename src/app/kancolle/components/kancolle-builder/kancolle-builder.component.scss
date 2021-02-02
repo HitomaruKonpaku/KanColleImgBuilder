@@ -1,0 +1,17 @@
+.kancolle-builder {
+  .kancolle-builder-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #202225;
+  }
+
+  .kancolle-builder-content {
+    margin-top: 64px;
+
+    .canvas-container {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
