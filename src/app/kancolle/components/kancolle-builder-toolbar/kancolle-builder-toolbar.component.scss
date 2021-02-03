@@ -6,26 +6,42 @@
     color: $white;
   }
 
-  .title {
-    text-transform: uppercase;
-  }
-
   .form {
     display: flex;
-    margin-left: 40px;
+    flex-wrap: wrap;
+    margin: auto;
 
-    .checkbox-container {
+    .form-group {
+      display: flex;
+      align-items: center;
+      margin-left: 24px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      .title {
+        & + * {
+          margin-left: 24px;
+        }
+      }
+    }
+
+    .theme {
+      .mat-select {
+        min-width: 100px;
+      }
+    }
+
+    .fleet {
       .mat-checkbox {
+        display: flex;
         margin-left: 16px;
 
         &:first-child {
           margin-left: 0;
         }
       }
-    }
-
-    .action-container {
-      margin-left: 24px;
     }
   }
 }

@@ -13,7 +13,7 @@ import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 export class KanColleBuilderComponent extends BaseComponent {
   public isLoading: boolean = false
 
-  private container!: HTMLElement
+  private container: HTMLElement
   private deck: any
 
   constructor(
@@ -29,9 +29,14 @@ export class KanColleBuilderComponent extends BaseComponent {
     this.container.innerHTML = ''
 
     const deck = { ...this.deck }
-    Object.entries(this.kcBuilderService.config).forEach(([key, value]) => {
-      if (!value) {
-        delete deck[key]
+    Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
+      if (key === 'theme') {
+        deck.theme = value
+      }
+      if (typeof value === 'boolean') {
+        if (!value) {
+          delete deck[key]
+        }
       }
     })
 
@@ -47,19 +52,28 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   async onInit() {
-    this.container = document.getElementById(KanColleConstant.BUILDER_CANVAS_CONTAINER_ID) as HTMLElement
+    this.initElements()
+    this.initData()
+    this.initConfig()
+    await this.generate()
+  }
 
+  private initElements() {
+    this.container = document.getElementById(KanColleConstant.BUILDER_CANVAS_CONTAINER_ID) as HTMLElement
+  }
+
+  private initData() {
     const params = this.route.snapshot.queryParams
     const deckValue = params.deck
     if (!deckValue) {
       return
     }
+    this.deck = JSON.parse(decodeURI(deckValue))
+  }
 
-    try {
-      this.deck = JSON.parse(deckValue)
-      await this.generate()
-    } catch (error) {
-      //
+  private initConfig() {
+    if (this.deck?.theme) {
+      this.kcBuilderService.setTheme(this.deck.theme)
     }
   }
 }

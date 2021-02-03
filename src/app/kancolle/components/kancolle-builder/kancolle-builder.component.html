@@ -1,6 +1,9 @@
 <section class="kancolle-builder">
   <div class="kancolle-builder-header">
-    <app-kancolle-builder-toolbar (generate)="generate()"></app-kancolle-builder-toolbar>
+    <app-kancolle-builder-toolbar
+      [isLoading]="isLoading"
+      (generate)="generate()"
+    ></app-kancolle-builder-toolbar>
 
     <mat-progress-bar
       *ngIf="isLoading"

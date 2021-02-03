@@ -1,13 +1,29 @@
 <section class="kancolle-builder-toolbar">
   <mat-toolbar>
-    <span class="title">{{ title }}</span>
-
     <form
       class="form"
       [formGroup]="formGroup"
       (submit)="submit()"
     >
-      <span class="checkbox-container">
+      <div class="form-group theme">
+        <span class="title">Theme</span>
+
+        <mat-select
+          formControlName="theme"
+          color="primary"
+        >
+          <mat-option
+            *ngFor="let theme of themes"
+            [value]="theme"
+          >
+            {{ theme }}
+          </mat-option>
+        </mat-select>
+      </div>
+
+      <div class="form-group fleet">
+        <span class="title">Fleets</span>
+
         <mat-checkbox
           formControlName="f1"
           color="primary"
@@ -35,17 +51,18 @@
         >
           #4
         </mat-checkbox>
-      </span>
+      </div>
 
-      <span class="action-container">
+      <div class="form-group action">
         <button
           mat-raised-button
           type="submit"
           color="primary"
+          [disabled]="isLoading"
         >
           Generate
         </button>
-      </span>
+      </div>
     </form>
   </mat-toolbar>
 </section>
