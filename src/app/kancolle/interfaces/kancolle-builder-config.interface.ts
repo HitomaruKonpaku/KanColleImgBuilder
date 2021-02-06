@@ -6,4 +6,5 @@ export interface KanColleBuilderConfig {
   f2: boolean
   f3: boolean
   f4: boolean
+  lbas: boolean
 }

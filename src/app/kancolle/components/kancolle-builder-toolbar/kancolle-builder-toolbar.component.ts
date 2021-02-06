@@ -14,6 +14,14 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
 
   @Output() generate = new EventEmitter()
 
+  public readonly FLEET_CHECKBOXS = [
+    { formControlName: 'f1', label: '#1' },
+    { formControlName: 'f2', label: '#2' },
+    { formControlName: 'f3', label: '#3' },
+    { formControlName: 'f4', label: '#4' },
+    { formControlName: 'lbas', label: 'LBAS' },
+  ]
+
   public themes: string[]
   public formGroup: FormGroup
 

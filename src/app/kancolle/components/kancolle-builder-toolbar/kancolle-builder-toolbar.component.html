@@ -9,8 +9,8 @@
         <span class="title">Theme</span>
 
         <mat-select
-          formControlName="theme"
           color="primary"
+          formControlName="theme"
         >
           <mat-option
             *ngFor="let theme of themes"
@@ -25,31 +25,11 @@
         <span class="title">Fleets</span>
 
         <mat-checkbox
-          formControlName="f1"
+          *ngFor="let fleetCheckbox of FLEET_CHECKBOXS"
           color="primary"
+          [formControlName]="fleetCheckbox.formControlName"
         >
-          #1
-        </mat-checkbox>
-
-        <mat-checkbox
-          formControlName="f2"
-          color="primary"
-        >
-          #2
-        </mat-checkbox>
-
-        <mat-checkbox
-          formControlName="f3"
-          color="primary"
-        >
-          #3
-        </mat-checkbox>
-
-        <mat-checkbox
-          formControlName="f4"
-          color="primary"
-        >
-          #4
+          {{ fleetCheckbox.label }}
         </mat-checkbox>
       </div>
 

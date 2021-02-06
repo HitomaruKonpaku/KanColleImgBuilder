@@ -10,6 +10,7 @@ export class KanColleBuilderService {
     f2: false,
     f3: false,
     f4: false,
+    lbas: false,
   }
 
   public getConfig() {
@@ -27,5 +28,9 @@ export class KanColleBuilderService {
       return
     }
     this.config.theme = value
+  }
+
+  public setLbas(value: boolean) {
+    this.config.lbas = value
   }
 }
