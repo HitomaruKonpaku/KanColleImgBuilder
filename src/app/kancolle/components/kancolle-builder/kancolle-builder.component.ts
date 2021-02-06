@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component } from '@angular/core'
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core'
+import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
 import { generate as gkcoi } from 'gkcoi'
 import { BaseComponent } from '../../../base/base.component'
-import { KanColleConstant } from '../../constants/kancolle.constant'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
 @Component({
@@ -11,9 +11,11 @@ import { KanColleBuilderService } from '../../services/kancolle-builder.service'
   styleUrls: ['./kancolle-builder.component.scss'],
 })
 export class KanColleBuilderComponent extends BaseComponent {
+  @ViewChild('drawer', { static: true }) drawer: MatDrawer
+  @ViewChild('canvasContainer', { static: true }) canvasContainerElementRef: ElementRef
+
   public isLoading: boolean = false
 
-  private container: HTMLElement
   private deck: any
 
   constructor(
@@ -24,9 +26,13 @@ export class KanColleBuilderComponent extends BaseComponent {
     super()
   }
 
+  private get canvasContainer() {
+    return this.canvasContainerElementRef.nativeElement as HTMLElement
+  }
+
   public async generate() {
     this.isLoading = true
-    this.container.innerHTML = ''
+    this.canvasContainer.innerHTML = ''
 
     const deck = { ...this.deck }
     Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
@@ -42,7 +48,7 @@ export class KanColleBuilderComponent extends BaseComponent {
 
     try {
       const canvas = await gkcoi(deck)
-      this.container.appendChild(canvas)
+      this.canvasContainer.appendChild(canvas)
     } catch (error) {
       throw error
     } finally {
@@ -52,14 +58,9 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   async onInit() {
-    this.initElements()
     this.initData()
     this.initConfig()
     await this.generate()
-  }
-
-  private initElements() {
-    this.container = document.getElementById(KanColleConstant.BUILDER_CANVAS_CONTAINER_ID) as HTMLElement
   }
 
   private initData() {

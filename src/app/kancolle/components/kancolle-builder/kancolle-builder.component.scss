@@ -1,16 +1,35 @@
+@import "../../../../assets/scss/variable";
+
+$builder-header-height: 64px;
+
 .kancolle-builder {
-  .kancolle-builder-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: #202225;
+  height: 100%;
+
+  .builder-container {
+    height: inherit;
   }
 
-  .kancolle-builder-content {
-    margin-top: 64px;
+  .builder-sidenav {
+    background: $black;
+  }
 
-    .canvas-container {
-      text-align: center;
+  .builder-sidenav-content {
+    height: inherit;
+  }
+
+  .builder-header {
+  }
+
+  .builder-content {
+    width: 100%;
+    height: calc(100% - #{$builder-header-height});
+    overflow: auto;
+  }
+
+  .canvas-container {
+    &::ng-deep canvas {
+      display: block;
+      margin: auto;
     }
   }
 }

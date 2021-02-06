@@ -2,7 +2,7 @@
 
 .kancolle-builder-toolbar {
   .mat-toolbar {
-    background: #202225;
+    background: $black;
     color: $white;
   }
 
@@ -23,14 +23,14 @@
 
       .title {
         & + * {
-          margin-left: 24px;
+          margin-left: 16px;
         }
       }
     }
 
     .theme {
       .mat-select {
-        min-width: 100px;
+        min-width: 90px;
       }
     }
 

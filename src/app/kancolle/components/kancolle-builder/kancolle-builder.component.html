@@ -1,21 +1,33 @@
 <section class="kancolle-builder">
-  <div class="kancolle-builder-header">
-    <app-kancolle-builder-toolbar
-      [isLoading]="isLoading"
-      (generate)="generate()"
-    ></app-kancolle-builder-toolbar>
+  <mat-drawer-container class="builder-container">
+    <mat-drawer
+      #drawer
+      class="builder-sidenav"
+      mode="over"
+    >
+      SideNav
+    </mat-drawer>
 
-    <mat-progress-bar
-      *ngIf="isLoading"
-      mode="buffer"
-      color="primary"
-    ></mat-progress-bar>
-  </div>
+    <div class="builder-sidenav-content">
+      <div class="builder-header">
+        <app-kancolle-builder-toolbar
+          [isLoading]="isLoading"
+          (generate)="generate()"
+        ></app-kancolle-builder-toolbar>
+      </div>
 
-  <div class="kancolle-builder-content">
-    <div
-      id="canvas-container"
-      class="canvas-container"
-    ></div>
-  </div>
+      <div class="builder-content">
+        <mat-progress-bar
+          *ngIf="isLoading"
+          mode="buffer"
+          color="primary"
+        ></mat-progress-bar>
+
+        <div
+          #canvasContainer
+          class="canvas-container"
+        ></div>
+      </div>
+    </div>
+  </mat-drawer-container>
 </section>
