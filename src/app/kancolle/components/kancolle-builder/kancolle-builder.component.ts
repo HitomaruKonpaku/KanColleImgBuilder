@@ -66,7 +66,10 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   private initConfig() {
-    if (this.deck?.theme) {
+    if (!this.deck) {
+      return
+    }
+    if (this.deck.theme) {
       this.kcBuilderService.setTheme(this.deck.theme)
     }
     if ([1, 2, 3].some(v => this.deck['a' + v])) {
