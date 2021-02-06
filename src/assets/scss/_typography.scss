@@ -1,0 +1,5 @@
+@import "variable";
+
+$custom-typography: mat-typography-config(
+  $font-family: $font-family,
+);

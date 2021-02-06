@@ -4,11 +4,13 @@
 // Plus imports for other components in your app.
 @import "assets/scss/variable";
 @import "assets/scss/palette";
+@import "assets/scss/typography";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+// @include mat-core();
+@include mat-core($custom-typography);
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
@@ -48,5 +50,5 @@ body {
 body {
   margin: 0;
   background: $grey;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: $font-family;
 }
