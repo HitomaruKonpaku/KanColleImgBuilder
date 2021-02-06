@@ -31,22 +31,15 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   public async generate() {
+    if (!this.deck) {
+      return
+    }
+
     this.isLoading = true
     this.canvasContainer.innerHTML = ''
 
-    const deck = { ...this.deck }
-    Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
-      if (key === 'theme') {
-        deck.theme = value
-      }
-      if (typeof value === 'boolean') {
-        if (!value) {
-          delete deck[key]
-        }
-      }
-    })
-
     try {
+      const deck = this.getDeckBuilder()
       const canvas = await gkcoi(deck)
       this.canvasContainer.appendChild(canvas)
     } catch (error) {
@@ -76,5 +69,20 @@ export class KanColleBuilderComponent extends BaseComponent {
     if (this.deck?.theme) {
       this.kcBuilderService.setTheme(this.deck.theme)
     }
+  }
+
+  private getDeckBuilder() {
+    const deck = { ...this.deck }
+    Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
+      if (key === 'theme') {
+        deck.theme = value
+      }
+      if (typeof value === 'boolean') {
+        if (!value) {
+          delete deck[key]
+        }
+      }
+    })
+    return deck
   }
 }
