@@ -1,9 +1,10 @@
 @import "../../../../assets/scss/variable";
 
+$builder-height: 100%;
 $builder-header-height: 64px;
 
 .kancolle-builder {
-  height: 100%;
+  height: $builder-height;
 
   .builder-container {
     height: inherit;
@@ -18,6 +19,9 @@ $builder-header-height: 64px;
   }
 
   .builder-header {
+    width: 100%;
+    background: $black;
+    overflow: auto;
   }
 
   .builder-content {

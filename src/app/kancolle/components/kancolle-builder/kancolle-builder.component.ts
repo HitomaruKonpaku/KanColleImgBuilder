@@ -69,6 +69,9 @@ export class KanColleBuilderComponent extends BaseComponent {
     if (this.deck?.theme) {
       this.kcBuilderService.setTheme(this.deck.theme)
     }
+    if ([1, 2, 3].some(v => this.deck['a' + v])) {
+      this.kcBuilderService.setLbas(true)
+    }
   }
 
   private getDeckBuilder() {
@@ -76,11 +79,16 @@ export class KanColleBuilderComponent extends BaseComponent {
     Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
       if (key === 'theme') {
         deck.theme = value
+        return
       }
-      if (typeof value === 'boolean') {
-        if (!value) {
-          delete deck[key]
-        }
+      if (key === 'lbas' && !value) {
+        delete deck.a1
+        delete deck.a2
+        delete deck.a3
+        return
+      }
+      if (typeof value === 'boolean' && !value) {
+        delete deck[key]
       }
     })
     return deck
