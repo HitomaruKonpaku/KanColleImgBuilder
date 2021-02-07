@@ -1,7 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core'
 import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
+import firebase from 'firebase/app'
+import 'firebase/database'
 import { generate as gkcoi } from 'gkcoi'
+import { from } from 'rxjs'
+import { catchError, map, take } from 'rxjs/operators'
+import { environment } from '../../../../environments/environment'
 import { BaseComponent } from '../../../base/base.component'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
@@ -30,12 +35,17 @@ export class KanColleBuilderComponent extends BaseComponent {
     return this.canvasContainerElementRef.nativeElement as HTMLElement
   }
 
+  private get database() {
+    return firebase.database()
+  }
+
   public async generate() {
     if (!this.deck) {
+      this.toggleLoading(false)
       return
     }
 
-    this.isLoading = true
+    this.toggleLoading(true)
     this.canvasContainer.innerHTML = ''
 
     try {
@@ -45,24 +55,18 @@ export class KanColleBuilderComponent extends BaseComponent {
     } catch (error) {
       throw error
     } finally {
-      this.isLoading = false
-      this.cdr.detectChanges()
+      this.toggleLoading(false)
     }
   }
 
   async onInit() {
-    this.initData()
+    this.initFirebase()
     this.initConfig()
-    await this.generate()
+    this.initData()
   }
 
-  private initData() {
-    const params = this.route.snapshot.queryParams
-    const deckValue = params.deck
-    if (!deckValue) {
-      return
-    }
-    this.deck = JSON.parse(decodeURI(deckValue))
+  private initFirebase() {
+    firebase.initializeApp(environment.firebaseConfig)
   }
 
   private initConfig() {
@@ -75,6 +79,40 @@ export class KanColleBuilderComponent extends BaseComponent {
     if ([1, 2, 3].some(v => this.deck['a' + v])) {
       this.kcBuilderService.setLbas(true)
     }
+  }
+
+  private initData() {
+    const params = this.route.snapshot.queryParams
+
+    if (params.deckId) {
+      const ref = `decks/${params.deckId}`
+      this.toggleLoading(true)
+      from(this.database.ref(ref).once('value'))
+        .pipe(
+          take(1),
+          map(v => v.val()),
+          catchError(error => {
+            this.toggleLoading(false)
+            throw error
+          }),
+        )
+        .subscribe(v => {
+          this.initDeck(v?.value)
+          this.database.goOffline()
+        })
+      return
+    }
+
+    if (params.deck) {
+      const value = params.deck
+      this.initDeck(JSON.parse(decodeURI(value)))
+    }
+  }
+
+  private initDeck(value: any) {
+    this.deck = value
+    this.initConfig()
+    this.generate()
   }
 
   private getDeckBuilder() {
@@ -95,5 +133,12 @@ export class KanColleBuilderComponent extends BaseComponent {
       }
     })
     return deck
+  }
+
+  private toggleLoading(isLoading?: boolean) {
+    this.isLoading = typeof isLoading === 'boolean'
+      ? isLoading
+      : !this.isLoading
+    this.cdr.detectChanges()
   }
 }

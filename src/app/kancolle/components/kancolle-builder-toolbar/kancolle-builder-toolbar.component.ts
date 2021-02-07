@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { Subscription } from 'rxjs'
 import { BaseComponent } from '../../../base/base.component'
 import { gkcoiTheme } from '../../enums/gkcoi-theme.enum'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
@@ -25,6 +26,8 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
   public themes: string[]
   public formGroup: FormGroup
 
+  private configSubscription: Subscription
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly kcBuilderService: KanColleBuilderService,
@@ -44,5 +47,15 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     // this.formGroup.valueChanges.subscribe(value => {
     //   console.debug(value)
     // })
+
+    this.configSubscription = this.kcBuilderService.getConfigObservable().subscribe(config => {
+      this.formGroup.patchValue(config)
+    })
+  }
+
+  onDestroy() {
+    if (this.configSubscription) {
+      this.configSubscription.unsubscribe()
+    }
   }
 }
