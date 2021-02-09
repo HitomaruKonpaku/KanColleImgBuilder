@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
+import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 import { KanColleBuilderConfig } from '../interfaces/kancolle-builder-config.interface'
 
 @Injectable()
 export class KanColleBuilderService {
   private config: KanColleBuilderConfig = {
+    lang: gkcoiLang.EN,
     theme: gkcoiTheme.DARK,
     f1: true,
     f2: false,
@@ -30,11 +32,22 @@ export class KanColleBuilderService {
     this.emitConfig()
   }
 
-  public setTheme(value: gkcoiTheme) {
-    const isValidValue = Object.values(gkcoiTheme).includes(value)
-    if (!isValidValue) {
+  public setLang(value: gkcoiLang) {
+    const isValid = Object.values(gkcoiLang).includes(value)
+    if (!isValid) {
       return
     }
+
+    this.config.lang = value
+    this.emitConfig()
+  }
+
+  public setTheme(value: gkcoiTheme) {
+    const isValid = Object.values(gkcoiTheme).includes(value)
+    if (!isValid) {
+      return
+    }
+
     this.config.theme = value
     this.emitConfig()
   }

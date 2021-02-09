@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { Subscription } from 'rxjs'
 import { BaseComponent } from '../../../base/base.component'
+import { gkcoiLang } from '../../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../../enums/gkcoi-theme.enum'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
@@ -20,9 +21,9 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     { formControlName: 'f2', label: '#2' },
     { formControlName: 'f3', label: '#3' },
     { formControlName: 'f4', label: '#4' },
-    { formControlName: 'lbas', label: 'LBAS' },
   ]
 
+  public langs: string[]
   public themes: string[]
   public formGroup: FormGroup
 
@@ -42,6 +43,7 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
   }
 
   onInit() {
+    this.langs = Object.values(gkcoiLang)
     this.themes = Object.values(gkcoiTheme)
     this.formGroup = this.fb.group(this.kcBuilderService.getConfig())
     // this.formGroup.valueChanges.subscribe(value => {
@@ -49,7 +51,7 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     // })
 
     this.configSubscription = this.kcBuilderService.getConfigObservable().subscribe(config => {
-      this.formGroup.patchValue(config)
+      this.formGroup.patchValue(config, { emitEvent: false })
     })
   }
 

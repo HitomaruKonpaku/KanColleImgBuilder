@@ -52,3 +52,11 @@ body {
   background: $grey;
   font-family: $font-family;
 }
+
+.mat-tooltip-panel {
+  .mat-tooltip {
+    background: $grey;
+    margin: 8px;
+    font-size: 12px;
+  }
+}

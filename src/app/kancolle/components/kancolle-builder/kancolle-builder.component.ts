@@ -73,8 +73,11 @@ export class KanColleBuilderComponent extends BaseComponent {
     if (!this.deck) {
       return
     }
+    if (this.deck.lang) {
+      this.kcBuilderService.setLang(this.deck.lang.toLowerCase())
+    }
     if (this.deck.theme) {
-      this.kcBuilderService.setTheme(this.deck.theme)
+      this.kcBuilderService.setTheme(this.deck.theme.toLowerCase())
     }
     if ([1, 2, 3].some(v => this.deck['a' + v])) {
       this.kcBuilderService.setLbas(true)
@@ -118,8 +121,8 @@ export class KanColleBuilderComponent extends BaseComponent {
   private getDeckBuilder() {
     const deck = { ...this.deck }
     Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
-      if (key === 'theme') {
-        deck.theme = value
+      if (['lang', 'theme'].includes(key)) {
+        deck[key] = value
         return
       }
       if (key === 'lbas' && !value) {

@@ -5,8 +5,34 @@
       [formGroup]="formGroup"
       (submit)="submit()"
     >
+      <div class="form-group lang">
+        <mat-icon
+          aria-hidden="false"
+          matTooltip="Language"
+        >
+          translate
+        </mat-icon>
+
+        <mat-select
+          color="primary"
+          formControlName="lang"
+        >
+          <mat-option
+            *ngFor="let lang of langs"
+            [value]="lang"
+          >
+            {{ lang | uppercase }}
+          </mat-option>
+        </mat-select>
+      </div>
+
       <div class="form-group theme">
-        <span class="title">Theme</span>
+        <mat-icon
+          aria-hidden="false"
+          matTooltip="Theme"
+        >
+          settings
+        </mat-icon>
 
         <mat-select
           color="primary"
@@ -33,14 +59,24 @@
         </mat-checkbox>
       </div>
 
+      <div class="form-group lbas">
+        <mat-checkbox
+          color="primary"
+          formControlName="lbas"
+        >
+          LBAS
+        </mat-checkbox>
+      </div>
+
       <div class="form-group action">
         <button
           mat-raised-button
           type="submit"
           color="primary"
+          matTooltip="Generate"
           [disabled]="isLoading"
         >
-          Generate
+          <mat-icon aria-hidden="false">cached</mat-icon>
         </button>
       </div>
     </form>
