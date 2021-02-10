@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { DeckBuilder } from 'gkcoi'
+import { DeckBuilder, generate } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
@@ -74,6 +74,11 @@ export class KanColleBuilderService {
       }
     })
     return deck as DeckBuilder
+  }
+
+  public async generateCanvas(deckBuilder: DeckBuilder) {
+    const canvas = await generate(deckBuilder)
+    return canvas
   }
 
   private emitConfig() {

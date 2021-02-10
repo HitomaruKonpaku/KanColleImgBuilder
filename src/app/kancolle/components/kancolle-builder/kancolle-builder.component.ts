@@ -3,7 +3,6 @@ import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
 import firebase from 'firebase/app'
 import 'firebase/database'
-import { generate as gkcoi } from 'gkcoi'
 import { from } from 'rxjs'
 import { catchError, map, take } from 'rxjs/operators'
 import { environment } from '../../../../environments/environment'
@@ -50,7 +49,7 @@ export class KanColleBuilderComponent extends BaseComponent {
 
     try {
       const deck = this.kcBuilderService.generateDeckBuilder(this.deck)
-      const canvas = await gkcoi(deck)
+      const canvas = await this.kcBuilderService.generateCanvas(deck)
       this.canvasContainer.appendChild(canvas)
     } catch (error) {
       throw error
