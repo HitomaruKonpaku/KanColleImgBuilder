@@ -100,7 +100,7 @@ export class KanColleBuilderComponent extends BaseComponent {
         }),
       )
       .subscribe(v => {
-        this.initDeck(v?.value)
+        this.initDeck(JSON.parse(v?.value || null))
       })
   }
 
