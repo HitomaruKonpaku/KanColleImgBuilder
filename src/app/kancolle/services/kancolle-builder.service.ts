@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { DeckBuilder } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
@@ -55,6 +56,24 @@ export class KanColleBuilderService {
   public setLbas(value: boolean) {
     this.config.lbas = value
     this.emitConfig()
+  }
+
+  public generateDeckBuilder(baseDeckBuilder: any) {
+    const deck = { ...baseDeckBuilder }
+    Object.entries(this.config).forEach(([key, value]) => {
+      if (['lang', 'theme'].includes(key)) {
+        deck[key] = value
+        return
+      }
+      if (key === 'lbas' && !value) {
+        [1, 2, 3].forEach(v => delete deck['a' + v])
+        return
+      }
+      if (typeof value === 'boolean' && !value) {
+        delete deck[key]
+      }
+    })
+    return deck as DeckBuilder
   }
 
   private emitConfig() {

@@ -49,7 +49,7 @@ export class KanColleBuilderComponent extends BaseComponent {
     this.canvasContainer.innerHTML = ''
 
     try {
-      const deck = this.getDeckBuilder()
+      const deck = this.kcBuilderService.generateDeckBuilder(this.deck)
       const canvas = await gkcoi(deck)
       this.canvasContainer.appendChild(canvas)
     } catch (error) {
@@ -86,56 +86,42 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   private initData() {
     const params = this.route.snapshot.queryParams
-
     if (params.deckId) {
-      const ref = `decks/${params.deckId}`
-      this.toggleLoading(true)
-      from(this.database.ref(ref).once('value'))
-        .pipe(
-          take(1),
-          map(v => v.val()),
-          catchError(error => {
-            this.toggleLoading(false)
-            throw error
-          }),
-        )
-        .subscribe(v => {
-          this.initDeck(v?.value)
-          this.database.goOffline()
-        })
+      this.initDeckFromDeckId(params.deckId)
       return
     }
-
     if (params.deck) {
-      const value = params.deck
-      this.initDeck(JSON.parse(decodeURI(value)))
+      this.initDeckFromDeck(params.deck)
+      return
     }
+  }
+
+  private initDeckFromDeckId(deckId: string) {
+    const ref = `decks/${deckId}`
+    this.toggleLoading(true)
+    from(this.database.ref(ref).once('value'))
+      .pipe(
+        take(1),
+        map(v => v.val()),
+        catchError(error => {
+          this.toggleLoading(false)
+          throw error
+        }),
+      )
+      .subscribe(v => {
+        this.initDeck(v?.value)
+        this.database.goOffline()
+      })
+  }
+
+  private initDeckFromDeck(value: any) {
+    this.initDeck(JSON.parse(decodeURI(value)))
   }
 
   private initDeck(value: any) {
     this.deck = value
     this.initConfig()
     this.generate()
-  }
-
-  private getDeckBuilder() {
-    const deck = { ...this.deck }
-    Object.entries(this.kcBuilderService.getConfig()).forEach(([key, value]) => {
-      if (['lang', 'theme'].includes(key)) {
-        deck[key] = value
-        return
-      }
-      if (key === 'lbas' && !value) {
-        delete deck.a1
-        delete deck.a2
-        delete deck.a3
-        return
-      }
-      if (typeof value === 'boolean' && !value) {
-        delete deck[key]
-      }
-    })
-    return deck
   }
 
   private toggleLoading(isLoading?: boolean) {
