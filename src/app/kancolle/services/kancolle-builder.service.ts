@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core'
 import { DeckBuilder, generate } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
+import { FirebaseDatabaseService } from '../../firebase/services/firebase-database.service'
+import { KanColleConstant } from '../constants/kancolle.constant'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 import { KanColleBuilderConfig } from '../interfaces/kancolle-builder-config.interface'
@@ -18,6 +20,10 @@ export class KanColleBuilderService {
   }
 
   private configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
+
+  private serviceConfig: any;
+
+  constructor(private readonly firebaseDatabaseService: FirebaseDatabaseService) { }
 
   public getConfig() {
     const config = { ...this.config }
@@ -77,11 +83,31 @@ export class KanColleBuilderService {
   }
 
   public async generateCanvas(deckBuilder: DeckBuilder) {
-    const canvas = await generate(deckBuilder)
+    await this.getServiceConfig()
+    const options = !!this.serviceConfig?.useCustomOptions
+      ? KanColleConstant.GKCOI_GENERATE_OPTIONS
+      : undefined
+    const canvas = await generate(deckBuilder, options)
     return canvas
   }
 
   private emitConfig() {
     this.configSubject.next(this.config)
+  }
+
+  private async getServiceConfig() {
+    if (this.serviceConfig) {
+      return
+    }
+
+    try {
+      const snapshot = await this.firebaseDatabaseService.getConfigRef().once('value')
+      const config = snapshot.val()
+      this.serviceConfig = config
+    } catch (error) {
+      // Ignore
+    } finally {
+      this.serviceConfig = this.serviceConfig || {}
+    }
   }
 }

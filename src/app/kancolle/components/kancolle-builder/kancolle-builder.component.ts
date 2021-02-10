@@ -1,12 +1,11 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core'
 import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
-import firebase from 'firebase/app'
 import 'firebase/database'
 import { from } from 'rxjs'
 import { catchError, map, take } from 'rxjs/operators'
-import { environment } from '../../../../environments/environment'
 import { BaseComponent } from '../../../base/base.component'
+import { FirebaseDatabaseService } from '../../../firebase/services/firebase-database.service'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
 @Component({
@@ -25,6 +24,7 @@ export class KanColleBuilderComponent extends BaseComponent {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
+    private readonly firebaseDatabaseService: FirebaseDatabaseService,
     private readonly kcBuilderService: KanColleBuilderService,
   ) {
     super()
@@ -32,10 +32,6 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   private get canvasContainer() {
     return this.canvasContainerElementRef.nativeElement as HTMLElement
-  }
-
-  private get database() {
-    return firebase.database()
   }
 
   public async generate() {
@@ -55,17 +51,13 @@ export class KanColleBuilderComponent extends BaseComponent {
       throw error
     } finally {
       this.toggleLoading(false)
+      this.firebaseDatabaseService.goOffline()
     }
   }
 
   async onInit() {
-    this.initFirebase()
     this.initConfig()
     this.initData()
-  }
-
-  private initFirebase() {
-    firebase.initializeApp(environment.firebaseConfig)
   }
 
   private initConfig() {
@@ -96,20 +88,19 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   private initDeckFromDeckId(deckId: string) {
-    const ref = `decks/${deckId}`
     this.toggleLoading(true)
-    from(this.database.ref(ref).once('value'))
+    from(this.firebaseDatabaseService.getDeckIdRef(deckId).once('value'))
       .pipe(
         take(1),
         map(v => v.val()),
         catchError(error => {
           this.toggleLoading(false)
+          this.firebaseDatabaseService.goOffline()
           throw error
         }),
       )
       .subscribe(v => {
         this.initDeck(v?.value)
-        this.database.goOffline()
       })
   }
 
@@ -117,10 +108,10 @@ export class KanColleBuilderComponent extends BaseComponent {
     this.initDeck(JSON.parse(decodeURI(value)))
   }
 
-  private initDeck(value: any) {
+  private async initDeck(value: any) {
     this.deck = value
     this.initConfig()
-    this.generate()
+    await this.generate()
   }
 
   private toggleLoading(isLoading?: boolean) {
