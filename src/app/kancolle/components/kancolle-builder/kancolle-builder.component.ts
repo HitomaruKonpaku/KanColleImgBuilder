@@ -1,11 +1,8 @@
+import { HttpClient } from '@angular/common/http'
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core'
 import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
-import 'firebase/database'
-import { from } from 'rxjs'
-import { catchError, map, take } from 'rxjs/operators'
 import { BaseComponent } from '../../../base/base.component'
-import { FirebaseDatabaseService } from '../../../firebase/services/firebase-database.service'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
 @Component({
@@ -23,8 +20,8 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly http: HttpClient,
     private readonly route: ActivatedRoute,
-    private readonly firebaseDatabaseService: FirebaseDatabaseService,
     private readonly kcBuilderService: KanColleBuilderService,
   ) {
     super()
@@ -44,14 +41,10 @@ export class KanColleBuilderComponent extends BaseComponent {
     this.canvasContainer.innerHTML = ''
 
     try {
-      const deck = this.kcBuilderService.generateDeckBuilder(this.deck)
-      const canvas = await this.kcBuilderService.generateCanvas(deck)
+      const canvas = await this.kcBuilderService.generateCanvas(this.deck)
       this.canvasContainer.appendChild(canvas)
-    } catch (error) {
-      throw error
     } finally {
       this.toggleLoading(false)
-      this.firebaseDatabaseService.goOffline()
     }
   }
 
@@ -87,25 +80,16 @@ export class KanColleBuilderComponent extends BaseComponent {
     }
   }
 
-  private initDeckFromDeckId(deckId: string) {
-    this.toggleLoading(true)
-    from(this.firebaseDatabaseService.getDeckIdRef(deckId).once('value'))
-      .pipe(
-        take(1),
-        map(v => v.val()),
-        catchError(error => {
-          this.toggleLoading(false)
-          this.firebaseDatabaseService.goOffline()
-          throw error
-        }),
-      )
-      .subscribe(v => {
-        this.initDeck(JSON.parse(v?.value || null))
-      })
+  private async initDeckFromDeckId(deckId: string) {
+    const url = this.kcBuilderService.getDeckIdUrl(deckId)
+    const res: any = await this.http.get(url).toPromise()
+    const value = JSON.parse(decodeURI(res.value))
+    await this.initDeck(value)
   }
 
-  private initDeckFromDeck(value: any) {
-    this.initDeck(JSON.parse(decodeURI(value)))
+  private async initDeckFromDeck(deckValue: string) {
+    const value = JSON.parse(decodeURI(deckValue))
+    await this.initDeck(value)
   }
 
   private async initDeck(value: any) {

@@ -10,12 +10,12 @@ import { MatSelectModule } from '@angular/material/select'
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { FirebaseModule } from '../firebase/firebase.module'
 import { KanColleBuilderToolbarComponent } from './components/kancolle-builder-toolbar/kancolle-builder-toolbar.component'
 import { KanColleBuilderComponent } from './components/kancolle-builder/kancolle-builder.component'
 import { KanColleComponent } from './components/kancolle.component'
 import { KanColleRoutingModule } from './kancolle-routing.module'
 import { KanColleBuilderService } from './services/kancolle-builder.service'
+import { KanColleConfigService } from './services/kancolle-config.service'
 
 @NgModule({
   imports: [
@@ -30,7 +30,6 @@ import { KanColleBuilderService } from './services/kancolle-builder.service'
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
-    FirebaseModule,
     KanColleRoutingModule,
   ],
   declarations: [
@@ -38,6 +37,9 @@ import { KanColleBuilderService } from './services/kancolle-builder.service'
     KanColleBuilderComponent,
     KanColleBuilderToolbarComponent,
   ],
-  providers: [KanColleBuilderService],
+  providers: [
+    KanColleConfigService,
+    KanColleBuilderService,
+  ],
 })
 export class KanColleModule { }

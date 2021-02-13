@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core'
 import { DeckBuilder, generate } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
-import { FirebaseDatabaseService } from '../../firebase/services/firebase-database.service'
 import { KanColleConstant } from '../constants/kancolle.constant'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 import { KanColleBuilderConfig } from '../interfaces/kancolle-builder-config.interface'
+import { KanColleConfigService } from './kancolle-config.service'
 
 @Injectable()
 export class KanColleBuilderService {
@@ -21,9 +21,7 @@ export class KanColleBuilderService {
 
   private configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
 
-  private serviceConfig: any;
-
-  constructor(private readonly firebaseDatabaseService: FirebaseDatabaseService) { }
+  constructor(private readonly kcConfigService: KanColleConfigService) { }
 
   public getConfig() {
     const config = { ...this.config }
@@ -64,50 +62,45 @@ export class KanColleBuilderService {
     this.emitConfig()
   }
 
-  public generateDeckBuilder(baseDeckBuilder: any) {
-    const deck = { ...baseDeckBuilder }
-    Object.entries(this.config).forEach(([key, value]) => {
-      if (['lang', 'theme'].includes(key)) {
-        deck[key] = value
-        return
-      }
-      if (key === 'lbas' && !value) {
-        [1, 2, 3].forEach(v => delete deck['a' + v])
-        return
-      }
-      if (typeof value === 'boolean' && !value) {
-        delete deck[key]
-      }
-    })
-    return deck as DeckBuilder
-  }
-
-  public async generateCanvas(deckBuilder: DeckBuilder) {
-    await this.getServiceConfig()
-    const options = !!this.serviceConfig?.useCustomOptions
-      ? KanColleConstant.GKCOI_GENERATE_OPTIONS
-      : undefined
+  public async generateCanvas(baseDeckBuilder: DeckBuilder) {
+    const deckBuilder = this.generateDeckBuilder(baseDeckBuilder)
+    const options = this.getGenerateOptions()
     const canvas = await generate(deckBuilder, options)
     return canvas
+  }
+
+  public getDeckIdUrl(id: string) {
+    const url = `${KanColleConstant.DECK_BASE_URL}${id}.json`
+    return url
   }
 
   private emitConfig() {
     this.configSubject.next(this.config)
   }
 
-  private async getServiceConfig() {
-    if (this.serviceConfig) {
-      return
-    }
+  private generateDeckBuilder(baseDeckBuilder: any) {
+    const deckBuilder = { ...baseDeckBuilder }
+    Object.entries(this.config).forEach(([key, value]) => {
+      if (['lang', 'theme'].includes(key)) {
+        deckBuilder[key] = value
+        return
+      }
+      if (key === 'lbas' && !value) {
+        [1, 2, 3].forEach(v => delete deckBuilder['a' + v])
+        return
+      }
+      if (typeof value === 'boolean' && !value) {
+        delete deckBuilder[key]
+      }
+    })
+    return deckBuilder as DeckBuilder
+  }
 
-    try {
-      const snapshot = await this.firebaseDatabaseService.getConfigRef().once('value')
-      const config = snapshot.val()
-      this.serviceConfig = config
-    } catch (error) {
-      // Ignore
-    } finally {
-      this.serviceConfig = this.serviceConfig || {}
-    }
+  private getGenerateOptions() {
+    const config = this.kcConfigService.getConfig()
+    const options = !!config.useCustomOptions
+      ? KanColleConstant.GKCOI_GENERATE_OPTIONS
+      : undefined
+    return options
   }
 }
