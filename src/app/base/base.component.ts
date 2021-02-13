@@ -1,11 +1,7 @@
-import { AfterViewInit, Injectable, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core'
+import { AfterViewInit, Injectable, OnDestroy, OnInit } from '@angular/core'
 
 @Injectable()
-export abstract class BaseComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
-  ngOnChanges(changes: SimpleChanges) {
-    this.onChanges(changes)
-  }
-
+export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.onInit()
   }
@@ -16,10 +12,6 @@ export abstract class BaseComponent implements OnChanges, OnInit, AfterViewInit,
 
   ngOnDestroy() {
     this.onDestroy()
-  }
-
-  protected onChanges(changes: SimpleChanges) {
-    //
   }
 
   protected onInit() {
