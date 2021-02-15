@@ -3,7 +3,7 @@
     <form
       class="form"
       [formGroup]="formGroup"
-      (submit)="submit()"
+      (submit)="onSubmit()"
     >
       <div class="form-group lang">
         <mat-icon
@@ -78,6 +78,17 @@
           [disabled]="isLoading"
         >
           <mat-icon aria-hidden="false">cached</mat-icon>
+        </button>
+
+        <button
+          mat-raised-button
+          type="button"
+          color="primary"
+          aria-label="Download"
+          matTooltip="Download"
+          (click)="onDownload()"
+        >
+          <mat-icon aria-hidden="false">download</mat-icon>
         </button>
       </div>
     </form>

@@ -48,6 +48,19 @@ export class KanColleBuilderComponent extends BaseComponent {
     }
   }
 
+  public download() {
+    const canvas = this.canvasContainer.querySelector('canvas')
+    if (!canvas) {
+      return
+    }
+
+    const dataUrl = canvas.toDataURL()
+    const anchor = document.createElement('a')
+    anchor.download = 'download.png'
+    anchor.href = dataUrl
+    anchor.click()
+  }
+
   async onInit() {
     this.initConfig()
     this.initData()

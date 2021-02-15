@@ -15,6 +15,7 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
   @Input() isLoading: boolean = false
 
   @Output() generate = new EventEmitter()
+  @Output() download = new EventEmitter()
 
   public readonly FLEET_CHECKBOXS = [
     { formControlName: 'f1', label: '#1' },
@@ -36,10 +37,14 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     super()
   }
 
-  public submit() {
+  public onSubmit() {
     const value = this.formGroup.value
     this.kcBuilderService.setConfig(value)
     this.generate.next()
+  }
+
+  public onDownload() {
+    this.download.next()
   }
 
   onInit() {
