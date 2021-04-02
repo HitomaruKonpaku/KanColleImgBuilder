@@ -5,7 +5,7 @@
 ## Usage
 
 * Navigate to <https://kancolleimgbuilder.web.app/builder>
-* Add query `?deck=xxx`
+* Add hash `#xxx`
   * `xxx` format refer to [DeckBuilder](https://github.com/Nishisonic/gkcoi#deckbuilder)
 
 ## Development server
