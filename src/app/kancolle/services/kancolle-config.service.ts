@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core'
 
 @Injectable()
 export class KanColleConfigService {
-  private config: any = {}
+  private config = {
+    useCustomOptions: true,
+  }
 
   public getConfig() {
     return { ...this.config }
