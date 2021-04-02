@@ -82,15 +82,14 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   private initData() {
-    const params = this.route.snapshot.queryParams
-    if (params.deckId) {
-      this.initDeckFromDeckId(params.deckId)
-      return
-    }
-    if (params.deck) {
-      this.initDeckFromDeck(params.deck)
-      return
-    }
+    const routeSnapshot = this.route.snapshot
+    const fragment = routeSnapshot.fragment
+    this.initDeckFromDeck(fragment)
+  }
+
+  private async initDeckFromDeck(deckValue: string) {
+    const value = JSON.parse(decodeURI(deckValue))
+    await this.initDeck(value)
   }
 
   private async initDeckFromDeckId(deckId: string) {
@@ -100,12 +99,8 @@ export class KanColleBuilderComponent extends BaseComponent {
     await this.initDeck(value)
   }
 
-  private async initDeckFromDeck(deckValue: string) {
-    const value = JSON.parse(decodeURI(deckValue))
-    await this.initDeck(value)
-  }
-
   private async initDeck(value: any) {
+    console.debug(value)
     this.deck = value
     this.initConfig()
     await this.generate()
