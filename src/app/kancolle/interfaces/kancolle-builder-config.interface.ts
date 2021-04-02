@@ -1,5 +1,5 @@
-import { gkcoiLang } from '../enums/gkcoi-lang.enum';
-import { gkcoiTheme } from '../enums/gkcoi-theme.enum';
+import { gkcoiLang } from '../enums/gkcoi-lang.enum'
+import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 
 export interface KanColleBuilderConfig {
   lang: gkcoiLang
