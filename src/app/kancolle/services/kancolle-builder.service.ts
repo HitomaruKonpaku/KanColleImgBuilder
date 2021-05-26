@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core'
+import { Injectable, NgZone } from '@angular/core'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { DeckBuilder, generate } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
 import { KanColleConstant } from '../constants/kancolle.constant'
@@ -21,7 +22,11 @@ export class KanColleBuilderService {
 
   private configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
 
-  constructor(private readonly kcConfigService: KanColleConfigService) { }
+  constructor(
+    private readonly zone: NgZone,
+    private readonly snackBar: MatSnackBar,
+    private readonly kcConfigService: KanColleConfigService,
+  ) { }
 
   public getConfig() {
     const config = { ...this.config }
@@ -65,8 +70,16 @@ export class KanColleBuilderService {
   public async generateCanvas(baseDeckBuilder: DeckBuilder) {
     const deckBuilder = this.generateDeckBuilder(baseDeckBuilder)
     const options = this.getGenerateOptions()
-    const canvas = await generate(deckBuilder, options)
-    return canvas
+
+    try {
+      const canvas = await generate(deckBuilder, options)
+      return canvas
+    } catch (error) {
+      this.zone.run(() => {
+        this.snackBar.open(error.message)
+      })
+      throw error
+    }
   }
 
   public getDeckIdUrl(id: string) {

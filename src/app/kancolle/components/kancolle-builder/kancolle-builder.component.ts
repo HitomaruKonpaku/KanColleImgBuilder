@@ -31,6 +31,14 @@ export class KanColleBuilderComponent extends BaseComponent {
     return this.canvasContainerElementRef.nativeElement as HTMLElement
   }
 
+  onInit() {
+    this.initConfig()
+  }
+
+  onAfterViewInit() {
+    this.initDeckData()
+  }
+
   public async generate() {
     if (!this.deck) {
       this.toggleLoading(false)
@@ -61,11 +69,6 @@ export class KanColleBuilderComponent extends BaseComponent {
     anchor.click()
   }
 
-  async onInit() {
-    this.initConfig()
-    this.initData()
-  }
-
   private initConfig() {
     if (!this.deck) {
       return
@@ -81,7 +84,7 @@ export class KanColleBuilderComponent extends BaseComponent {
     }
   }
 
-  private initData() {
+  private initDeckData() {
     const routeSnapshot = this.route.snapshot
     const fragment = routeSnapshot.fragment
     this.initDeckFromDeck(fragment)

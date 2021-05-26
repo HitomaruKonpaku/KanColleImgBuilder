@@ -37,16 +37,6 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     super()
   }
 
-  public onSubmit() {
-    const value = this.formGroup.value
-    this.kcBuilderService.setConfig(value)
-    this.generate.next()
-  }
-
-  public onDownload() {
-    this.download.next()
-  }
-
   onInit() {
     this.langs = Object.values(gkcoiLang)
     this.themes = Object.values(gkcoiTheme)
@@ -64,5 +54,15 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     if (this.configSubscription) {
       this.configSubscription.unsubscribe()
     }
+  }
+
+  public onSubmit() {
+    const value = this.formGroup.value
+    this.kcBuilderService.setConfig(value)
+    this.generate.next()
+  }
+
+  public onDownload() {
+    this.download.next()
   }
 }

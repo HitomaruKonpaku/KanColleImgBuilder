@@ -60,3 +60,12 @@ body {
     font-size: 12px;
   }
 }
+
+.mat-snack-bar-container {
+  background-color: $black;
+  color: $white;
+
+  span {
+    margin: auto;
+  }
+}

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatSelectModule } from '@angular/material/select'
 import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { KanColleBuilderToolbarComponent } from './components/kancolle-builder-toolbar/kancolle-builder-toolbar.component'
@@ -28,6 +29,7 @@ import { KanColleConfigService } from './services/kancolle-config.service'
     MatProgressBarModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule,
     KanColleRoutingModule,
@@ -38,6 +40,10 @@ import { KanColleConfigService } from './services/kancolle-config.service'
     KanColleBuilderToolbarComponent,
   ],
   providers: [
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: { duration: 5000 },
+    },
     KanColleConfigService,
     KanColleBuilderService,
   ],
