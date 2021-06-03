@@ -1,6 +1,6 @@
-import { AfterViewInit, Injectable, OnDestroy, OnInit } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core'
 
-@Injectable()
+@Component({ template: '' })
 export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.onInit()

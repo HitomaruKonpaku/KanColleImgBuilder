@@ -12,8 +12,9 @@
       <div class="builder-header">
         <app-kancolle-builder-toolbar
           [isLoading]="isLoading"
-          (generate)="generate()"
-          (download)="download()"
+          (imageGenerate)="generate()"
+          (imageCopy)="copy()"
+          (imageDownload)="download()"
         ></app-kancolle-builder-toolbar>
       </div>
 

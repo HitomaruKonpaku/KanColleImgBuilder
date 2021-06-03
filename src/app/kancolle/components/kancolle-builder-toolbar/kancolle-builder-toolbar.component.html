@@ -84,8 +84,19 @@
           mat-raised-button
           type="button"
           color="primary"
-          aria-label="Download"
-          matTooltip="Download"
+          aria-label="Copy image"
+          matTooltip="Copy image"
+          (click)="onCopy()"
+        >
+          <mat-icon aria-hidden="false">content_copy</mat-icon>
+        </button>
+
+        <button
+          mat-raised-button
+          type="button"
+          color="primary"
+          aria-label="Download image"
+          matTooltip="Download image"
           (click)="onDownload()"
         >
           <mat-icon aria-hidden="false">download</mat-icon>

@@ -12,10 +12,11 @@ import { KanColleBuilderService } from '../../services/kancolle-builder.service'
   styleUrls: ['./kancolle-builder-toolbar.component.scss'],
 })
 export class KanColleBuilderToolbarComponent extends BaseComponent {
-  @Input() isLoading: boolean = false
+  @Input() isLoading = false
 
-  @Output() generate = new EventEmitter()
-  @Output() download = new EventEmitter()
+  @Output() imageGenerate = new EventEmitter()
+  @Output() imageCopy = new EventEmitter()
+  @Output() imageDownload = new EventEmitter()
 
   public readonly FLEET_CHECKBOXS = [
     { formControlName: 'f1', label: '#1' },
@@ -59,10 +60,14 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
   public onSubmit() {
     const value = this.formGroup.value
     this.kcBuilderService.setConfig(value)
-    this.generate.next()
+    this.imageGenerate.next()
+  }
+
+  public onCopy() {
+    this.imageCopy.next()
   }
 
   public onDownload() {
-    this.download.next()
+    this.imageDownload.next()
   }
 }

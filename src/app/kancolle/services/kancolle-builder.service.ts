@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core'
-import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar'
 import { DeckBuilder, generate } from 'gkcoi'
 import { BehaviorSubject } from 'rxjs'
 import { KanColleConstant } from '../constants/kancolle.constant'
@@ -75,9 +75,7 @@ export class KanColleBuilderService {
       const canvas = await generate(deckBuilder, options)
       return canvas
     } catch (error) {
-      this.zone.run(() => {
-        this.snackBar.open(error.message)
-      })
+      this.openSnackBar(error.message)
       throw error
     }
   }
@@ -85,6 +83,12 @@ export class KanColleBuilderService {
   public getDeckIdUrl(id: string) {
     const url = `${KanColleConstant.DECK_BASE_URL}${id}.json`
     return url
+  }
+
+  public openSnackBar(message: string, action?: string, config?: MatSnackBarConfig) {
+    this.zone.run(() => {
+      this.snackBar.open(message, action, config)
+    })
   }
 
   private emitConfig() {

@@ -14,9 +14,10 @@ export class KanColleBuilderComponent extends BaseComponent {
   @ViewChild('drawer', { static: true }) drawer: MatDrawer
   @ViewChild('canvasContainer', { static: true }) canvasContainerElementRef: ElementRef
 
-  public isLoading: boolean = false
+  public isLoading = false
 
   private deck: any
+  private canvas: HTMLCanvasElement
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -50,14 +51,34 @@ export class KanColleBuilderComponent extends BaseComponent {
 
     try {
       const canvas = await this.kcBuilderService.generateCanvas(this.deck)
+      this.canvas = canvas
       this.canvasContainer.appendChild(canvas)
     } finally {
       this.toggleLoading(false)
     }
   }
 
+  public copy() {
+    const canvas = this.canvas
+    if (!canvas) {
+      return
+    }
+
+    canvas.toBlob(blob => {
+      try {
+        // @ts-ignore
+        const item = new ClipboardItem({ 'image/png': blob })
+        // @ts-ignore
+        navigator.clipboard.write([item])
+        this.kcBuilderService.openSnackBar('Copied!')
+      } catch (error) {
+        this.kcBuilderService.openSnackBar(error.message)
+      }
+    })
+  }
+
   public download() {
-    const canvas = this.canvasContainer.querySelector('canvas')
+    const canvas = this.canvas
     if (!canvas) {
       return
     }
@@ -67,6 +88,7 @@ export class KanColleBuilderComponent extends BaseComponent {
     anchor.download = 'download.png'
     anchor.href = dataUrl
     anchor.click()
+    this.kcBuilderService.openSnackBar('Downloaded!')
   }
 
   private initConfig() {

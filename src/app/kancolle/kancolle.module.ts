@@ -42,7 +42,7 @@ import { KanColleConfigService } from './services/kancolle-config.service'
   providers: [
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-      useValue: { duration: 5000 },
+      useValue: { duration: 3000 },
     },
     KanColleConfigService,
     KanColleBuilderService,
