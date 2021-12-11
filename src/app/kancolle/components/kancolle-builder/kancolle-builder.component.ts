@@ -109,6 +109,10 @@ export class KanColleBuilderComponent extends BaseComponent {
   private initDeckData() {
     const routeSnapshot = this.route.snapshot
     const fragment = routeSnapshot.fragment
+    if (!fragment) {
+      console.warn(`fragment not found`)
+      return
+    }
     this.initDeckFromDeck(fragment)
   }
 

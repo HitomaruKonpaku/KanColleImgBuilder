@@ -60,14 +60,14 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
   public onSubmit() {
     const value = this.formGroup.value
     this.kcBuilderService.setConfig(value)
-    this.imageGenerate.next()
+    this.imageGenerate.next(null)
   }
 
   public onCopy() {
-    this.imageCopy.next()
+    this.imageCopy.next(null)
   }
 
   public onDownload() {
-    this.imageDownload.next()
+    this.imageDownload.next(null)
   }
 }
