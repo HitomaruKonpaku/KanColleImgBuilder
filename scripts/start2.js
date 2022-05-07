@@ -17,7 +17,7 @@ https.get(url, (res) => {
 
   res.on('end', () => {
     console.debug(new Date(), 'Response length', data.length)
-    const obj = { api_data: JSON.parse(data) }
+    const obj = JSON.parse(data)
     const content = JSON.stringify(obj)
     console.debug(new Date(), 'Content length', content.length)
     fs.writeFileSync(outPath, content)
