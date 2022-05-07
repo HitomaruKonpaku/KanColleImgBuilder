@@ -23,6 +23,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "optimization": false,
+            "sourceMap": true,
             "outputPath": "dist/KanColleImgBuilder",
             "index": "src/index.html",
             "main": "src/main.ts",
