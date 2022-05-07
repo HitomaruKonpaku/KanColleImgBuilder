@@ -110,7 +110,24 @@ export class KanColleBuilderService {
         delete deckBuilder[key]
       }
     })
+    this.clearErrorIds(deckBuilder)
     return deckBuilder as DeckBuilder
+  }
+
+  /**
+   * Temporary disable ids due to gkcoi generate error
+   */
+  private clearErrorIds(deck: any) {
+    ['a1', 'a2', 'a3'].forEach(aKey => {
+      const lbas = deck[aKey]
+      if (!lbas?.items) { return }
+      ['i1', 'i2', 'i3', 'i4'].forEach(iKey => {
+        const item = lbas.items[iKey]
+        if (!item?.id) { return }
+        if (![452, 453].includes(item.id)) { return }
+        item.id = 0
+      })
+    })
   }
 
   private getGenerateOptions() {
