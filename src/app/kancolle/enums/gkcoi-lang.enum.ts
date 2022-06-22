@@ -3,4 +3,5 @@ export enum gkcoiLang {
   JP = 'jp',
   KR = 'kr',
   SCN = 'scn',
+  TCN = 'tcn',
 }
