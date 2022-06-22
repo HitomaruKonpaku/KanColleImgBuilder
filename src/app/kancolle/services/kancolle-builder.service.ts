@@ -110,7 +110,7 @@ export class KanColleBuilderService {
         delete deckBuilder[key]
       }
     })
-    this.clearErrorIds(deckBuilder)
+    // this.clearErrorIds(deckBuilder)
     return deckBuilder as DeckBuilder
   }
 
