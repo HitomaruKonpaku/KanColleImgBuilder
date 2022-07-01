@@ -110,7 +110,7 @@ export class KanColleBuilderService {
         delete deckBuilder[key]
       }
     })
-    // this.clearErrorIds(deckBuilder)
+    this.clearErrorIds(deckBuilder)
     return deckBuilder as DeckBuilder
   }
 
@@ -118,16 +118,38 @@ export class KanColleBuilderService {
    * Temporary disable ids due to gkcoi generate error
    */
   private clearErrorIds(deck: any) {
-    ['a1', 'a2', 'a3'].forEach(aKey => {
-      const lbas = deck[aKey]
-      if (!lbas?.items) { return }
-      ['i1', 'i2', 'i3', 'i4'].forEach(iKey => {
-        const item = lbas.items[iKey]
-        if (!item?.id) { return }
-        if (![452, 453].includes(item.id)) { return }
-        item.id = 0
+    const errorItemIds = [
+      102, // Type 98 Reconnaissance Seaplane (Night Recon)
+      469, // Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)
+    ];
+
+    const disableItem = (item: any) => {
+      if (!item) return
+      if (!errorItemIds.includes(item.id)) return
+      item.id = 0
+    }
+
+    ['f1', 'f2', 'f3', 'f4'].forEach(fid => {
+      const fleet = deck[fid]
+      if (!fleet) return
+      ['s1', 's2', 's3', 's4', 's5', 's6', 's7'].forEach(sid => {
+        const ship = fleet[sid]
+        if (!ship?.items) return
+        ['i1', 'i2', 'i3', 'i4', 'i5', 'i6'].forEach(iid => {
+          const item = ship.items[iid]
+          disableItem(item)
+        })
       })
-    })
+    });
+
+    ['a1', 'a2', 'a3'].forEach(aid => {
+      const lbas = deck[aid]
+      if (!lbas?.items) return
+      ['i1', 'i2', 'i3', 'i4'].forEach(iid => {
+        const item = lbas.items[iid]
+        disableItem(item)
+      })
+    });
   }
 
   private getGenerateOptions() {
