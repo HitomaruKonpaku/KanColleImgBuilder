@@ -95,12 +95,19 @@ export class KanColleBuilderComponent extends BaseComponent {
     if (!this.deck) {
       return
     }
+    // Auto select lang
     if (this.deck.lang) {
       this.kcBuilderService.setLang(this.deck.lang.toLowerCase())
     }
+    // Auto select theme
     if (this.deck.theme) {
       this.kcBuilderService.setTheme(this.deck.theme.toLowerCase())
     }
+    // Auto select Striking Force Fleet
+    if (this.deck.f3?.s7) {
+      this.kcBuilderService.setConfig({ f1: false, f3: true })
+    }
+    // Auto select LBAS
     if ([1, 2, 3].some(v => this.deck['a' + v])) {
       this.kcBuilderService.setLbas(true)
     }

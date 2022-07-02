@@ -10,7 +10,7 @@ import { KanColleConfigService } from './kancolle-config.service'
 
 @Injectable()
 export class KanColleBuilderService {
-  private config: KanColleBuilderConfig = {
+  private readonly config: KanColleBuilderConfig = {
     lang: gkcoiLang.EN,
     theme: gkcoiTheme.DARK,
     f1: true,
@@ -20,7 +20,7 @@ export class KanColleBuilderService {
     lbas: false,
   }
 
-  private configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
+  private readonly configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
 
   constructor(
     private readonly zone: NgZone,
