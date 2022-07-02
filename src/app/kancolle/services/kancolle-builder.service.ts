@@ -118,9 +118,9 @@ export class KanColleBuilderService {
    * Temporary disable ids due to gkcoi generate error
    */
   private clearErrorIds(deck: any) {
-    const errorItemIds = [
-      102, // Type 98 Reconnaissance Seaplane (Night Recon)
-      469, // Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)
+    const errorItemIds: string[] = [
+      // 102, // Type 98 Reconnaissance Seaplane (Night Recon)
+      // 469, // Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)
     ];
 
     const disableItem = (item: any) => {
