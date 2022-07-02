@@ -67,6 +67,42 @@ export class KanColleBuilderService {
     this.emitConfig()
   }
 
+  public updateConfigByDeck(deck: DeckBuilder & Record<string, any>) {
+    if (!deck) {
+      return
+    }
+
+    // Auto select lang
+    if (deck.lang) {
+      this.setLang(deck.lang.toLowerCase() as gkcoiLang)
+    }
+
+    // Auto select theme
+    if (deck.theme) {
+      this.setTheme(deck.theme.toLowerCase() as gkcoiTheme)
+    }
+
+    // Auto select LBAS
+    if ([1, 2, 3].some(v => deck['a' + v])) {
+      this.setLbas(true)
+    }
+
+    // Use custom data to auto select fleets
+    const { sortied, combined } = deck
+    if ([1, 2, 3, 4].includes(sortied)) {
+      if (combined) {
+        this.setConfig({ f1: true, f2: true })
+      } else {
+        this.setConfig({ f1: false })
+        this.setConfig({ ['f' + sortied]: true })
+      }
+    } else if (deck.f3?.s7) {
+      this.setConfig({ f1: false, f3: true })
+    } else if (combined) {
+      this.setConfig({ f1: true, f2: true })
+    }
+  }
+
   public async generateCanvas(baseDeckBuilder: DeckBuilder) {
     const deckBuilder = this.generateDeckBuilder(baseDeckBuilder)
     const options = this.getGenerateOptions()
@@ -78,11 +114,6 @@ export class KanColleBuilderService {
       this.openSnackBar(error.message)
       throw error
     }
-  }
-
-  public getDeckIdUrl(id: string) {
-    const url = `${KanColleConstant.DECK_BASE_URL}${id}.json`
-    return url
   }
 
   public openSnackBar(message: string, action?: string, config?: MatSnackBarConfig) {

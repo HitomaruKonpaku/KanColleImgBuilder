@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http'
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core'
 import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
+import { DeckBuilder } from 'gkcoi'
 import { BaseComponent } from '../../../base/base.component'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
@@ -16,12 +16,11 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   public isLoading = false
 
-  private deck: any
+  private deck: DeckBuilder & Record<string, any>
   private canvas: HTMLCanvasElement
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly http: HttpClient,
     private readonly route: ActivatedRoute,
     private readonly kcBuilderService: KanColleBuilderService,
   ) {
@@ -92,25 +91,7 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   private initConfig() {
-    if (!this.deck) {
-      return
-    }
-    // Auto select lang
-    if (this.deck.lang) {
-      this.kcBuilderService.setLang(this.deck.lang.toLowerCase())
-    }
-    // Auto select theme
-    if (this.deck.theme) {
-      this.kcBuilderService.setTheme(this.deck.theme.toLowerCase())
-    }
-    // Auto select Striking Force Fleet
-    if (this.deck.f3?.s7) {
-      this.kcBuilderService.setConfig({ f1: false, f3: true })
-    }
-    // Auto select LBAS
-    if ([1, 2, 3].some(v => this.deck['a' + v])) {
-      this.kcBuilderService.setLbas(true)
-    }
+    this.kcBuilderService.updateConfigByDeck(this.deck)
   }
 
   private initDeckData() {
@@ -125,13 +106,6 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   private async initDeckFromDeck(deckValue: string) {
     const value = JSON.parse(decodeURI(deckValue))
-    await this.initDeck(value)
-  }
-
-  private async initDeckFromDeckId(deckId: string) {
-    const url = this.kcBuilderService.getDeckIdUrl(deckId)
-    const res: any = await this.http.get(url).toPromise()
-    const value = JSON.parse(decodeURI(res.value))
     await this.initDeck(value)
   }
 
