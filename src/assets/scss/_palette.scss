@@ -3,22 +3,32 @@
 $primary-palette: (
   100: #a5b9ff,
   500: $primary,
+  700: $primary,
   contrast: (
+    100: $white,
     500: $white,
+    700: $white,
   ),
 );
 
 $accent-palette: (
   100: #78e8b2,
   500: $accent,
+  700: $accent,
   contrast: (
+    100: $white,
     500: $white,
+    700: $white,
   ),
 );
 
 $warn-palette: (
+  100: $warn,
   500: $warn,
+  700: $warn,
   contrast: (
+    100: $white,
     500: $white,
+    700: $white,
   ),
 );
