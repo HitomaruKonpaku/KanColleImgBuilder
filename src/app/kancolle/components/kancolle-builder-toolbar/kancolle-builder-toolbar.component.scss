@@ -32,6 +32,12 @@
 
     .mat-checkbox {
       display: flex;
+
+      span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
     }
 
     .lang {
