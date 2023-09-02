@@ -49,6 +49,10 @@ export class KanColleBuilderToolbarComponent extends BaseComponent {
     this.configSubscription = this.kcBuilderService.getConfigObservable().subscribe(config => {
       this.formGroup.patchValue(config, { emitEvent: false })
     })
+
+    this.formGroup.valueChanges.subscribe(value => {
+      console.debug(value)
+    })
   }
 
   onDestroy() {

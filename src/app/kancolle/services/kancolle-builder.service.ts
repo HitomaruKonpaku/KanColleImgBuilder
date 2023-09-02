@@ -18,15 +18,20 @@ export class KanColleBuilderService {
     f3: false,
     f4: false,
     lbas: false,
+    hideShipImage: false,
   }
 
   private readonly configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
+
+  private readonly LS_KEY = 'config'
 
   constructor(
     private readonly zone: NgZone,
     private readonly snackBar: MatSnackBar,
     private readonly kcConfigService: KanColleConfigService,
-  ) { }
+  ) {
+    this.loadConfig()
+  }
 
   public getConfig() {
     const config = { ...this.config }
@@ -39,6 +44,7 @@ export class KanColleBuilderService {
 
   public setConfig(value: KanColleBuilderConfig) {
     Object.assign(this.config, value)
+    this.saveConfig()
     this.emitConfig()
   }
 
@@ -142,7 +148,15 @@ export class KanColleBuilderService {
       }
     })
     this.clearErrorIds(deckBuilder)
+    Object.assign(deckBuilder, { options: this.generateDeckBuilderOptions() })
     return deckBuilder as DeckBuilder
+  }
+
+  private generateDeckBuilderOptions() {
+    const options = {
+      hideShipImage: !!this.config.hideShipImage,
+    }
+    return options
   }
 
   /**
@@ -189,5 +203,18 @@ export class KanColleBuilderService {
       ? KanColleConstant.GKCOI_GENERATE_OPTIONS
       : undefined
     return options
+  }
+
+  private saveConfig() {
+    localStorage.setItem(this.LS_KEY, JSON.stringify(this.config))
+  }
+
+  private loadConfig() {
+    try {
+      const cfg = JSON.parse(localStorage.getItem(this.LS_KEY) || '{}')
+      this.setConfig(cfg)
+    } catch (error) {
+      // ignore
+    }
   }
 }
