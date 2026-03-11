@@ -206,7 +206,13 @@ export class KanColleBuilderService {
   }
 
   private saveConfig() {
-    localStorage.setItem(this.LS_KEY, JSON.stringify(this.config))
+    const cfg = { ...this.config }
+    delete cfg.f1
+    delete cfg.f2
+    delete cfg.f3
+    delete cfg.f4
+    delete cfg.lbas
+    localStorage.setItem(this.LS_KEY, JSON.stringify(cfg))
   }
 
   private loadConfig() {

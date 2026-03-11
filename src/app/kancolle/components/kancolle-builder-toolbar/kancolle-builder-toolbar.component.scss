@@ -17,15 +17,18 @@
       align-items: center;
       margin: 0 8px;
 
-      .mat-icon {
+      .icon {
+        display: flex;
+        align-items: center;
+
         & + * {
-          margin-left: 16px;
+          margin-left: 8px;
         }
       }
 
       .title {
         & + * {
-          margin-left: 16px;
+          margin-left: 8px;
         }
       }
     }
