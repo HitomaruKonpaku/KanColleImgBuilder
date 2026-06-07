@@ -10,4 +10,5 @@ export interface KanColleBuilderConfig {
   f4?: boolean
   lbas?: boolean
   hideShipImage?: boolean
+  extendEquipText?: boolean
 }

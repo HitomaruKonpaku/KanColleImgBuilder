@@ -7,6 +7,7 @@ import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 import { KanColleBuilderConfig } from '../interfaces/kancolle-builder-config.interface'
 import { KanColleConfigService } from './kancolle-config.service'
+import { DeckBuilderOptions, Theme } from 'gkcoi/dist/type'
 
 @Injectable()
 export class KanColleBuilderService {
@@ -19,6 +20,7 @@ export class KanColleBuilderService {
     f4: false,
     lbas: false,
     hideShipImage: false,
+    extendEquipText: false,
   }
 
   private readonly configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
@@ -153,9 +155,37 @@ export class KanColleBuilderService {
   }
 
   private generateDeckBuilderOptions() {
-    const options = {
+    const theme = this.config.theme
+    const options: DeckBuilderOptions & Record<string, any> = {
       hideShipImage: !!this.config.hideShipImage,
     }
+
+    if (!options.hideShipImage && this.config.extendEquipText) {
+      options.shipImageOffsetX = -50
+      options.equipTextOffsetX = -200
+      options.equipTextOverlay = {
+        getStyle: (ctx: CanvasRenderingContext2D) => {
+          if (theme === 'dark' || theme === 'dark-ex') {
+            const gradient = ctx.createLinearGradient(0, 65, 998, 65)
+            gradient.addColorStop(0, '#1a1a1a00')
+            gradient.addColorStop(0.20, '#1a1a1a')
+            gradient.addColorStop(0.8, '#1a1a1a')
+            gradient.addColorStop(1, '#ffffff')
+            return gradient
+          }
+          if (theme === 'light' || theme === 'light-ex') {
+            const gradient = ctx.createLinearGradient(0, 65, 998, 65)
+            gradient.addColorStop(0, '#fafafa00')
+            gradient.addColorStop(0.20, '#fafafa')
+            gradient.addColorStop(0.8, '#fafafa')
+            gradient.addColorStop(1, '#fafafa')
+            return gradient
+          }
+          return null
+        },
+      }
+    }
+
     return options
   }
 
@@ -166,7 +196,7 @@ export class KanColleBuilderService {
     const errorItemIds: string[] = [
       // 102, // Type 98 Reconnaissance Seaplane (Night Recon)
       // 469, // Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)
-    ];
+    ]
 
     const disableItem = (item: any) => {
       if (!item) return

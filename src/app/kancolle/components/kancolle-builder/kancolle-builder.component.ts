@@ -110,7 +110,7 @@ export class KanColleBuilderComponent extends BaseComponent {
   }
 
   private async initDeck(value: any) {
-    console.debug(value)
+    console.debug('deck', value)
     this.deck = value
     this.initConfig()
     await this.generate()
