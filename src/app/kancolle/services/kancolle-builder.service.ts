@@ -1,13 +1,14 @@
 import { Injectable, NgZone } from '@angular/core'
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar'
 import { DeckBuilder, generate } from 'gkcoi'
+import { DeckBuilderOptions, Item } from 'gkcoi/dist/type'
+import { toTranslateEquipmentName } from 'gkcoi/dist/utils'
 import { BehaviorSubject } from 'rxjs'
 import { KanColleConstant } from '../constants/kancolle.constant'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
 import { gkcoiTheme } from '../enums/gkcoi-theme.enum'
 import { KanColleBuilderConfig } from '../interfaces/kancolle-builder-config.interface'
 import { KanColleConfigService } from './kancolle-config.service'
-import { DeckBuilderOptions, Theme } from 'gkcoi/dist/type'
 
 @Injectable()
 export class KanColleBuilderService {
@@ -163,7 +164,7 @@ export class KanColleBuilderService {
     if (!options.hideShipImage && this.config.extendEquipText) {
       options.shipImageOffsetX = -50
       options.equipTextOffsetX = -200
-      options.equipTextOverlay = {
+      options.equipOverlayText = {
         getStyle: (ctx: CanvasRenderingContext2D) => {
           if (theme === 'dark' || theme === 'dark-ex') {
             const gradient = ctx.createLinearGradient(0, 65, 998, 65)
@@ -182,6 +183,24 @@ export class KanColleBuilderService {
             return gradient
           }
           return null
+        },
+      }
+      options.equipItemText = {
+        getFont: (ctx: CanvasRenderingContext2D, item: Item, { items }) => {
+          const name = toTranslateEquipmentName(item.name, items)
+          if (name.length >= 80) {
+            return '9px Meiryo';
+          }
+          if (name.length >= 75) {
+            return '10px Meiryo';
+          }
+          if (name.length >= 65) {
+            return '11px Meiryo';
+          }
+          if (name.length >= 55) {
+            return '12px Meiryo';
+          }
+          return ctx.font
         },
       }
     }
