@@ -164,14 +164,14 @@ export class KanColleBuilderService {
     options.drawHooks = {
       drawShipImage: async ({ ctx, ship }) => {
         try {
-          const image = await ship.fetchImage(ShipImageKind.REMODEL)
+          const image = await ship.fetchImage('remodel' as ShipImageKind)
           ctx.drawImage(
             image,
             0, 3, image.width, image.height,
             -100, 0, image.width, image.height,
           )
         } catch (error) {
-          // ignore
+          console.warn(error)
         }
       },
       drawLbEquipText: ({ ctx, indexes, text }) => {
@@ -195,14 +195,14 @@ export class KanColleBuilderService {
       const hooks: DrawHooks = {
         drawShipImage: async ({ ctx, ship }) => {
           try {
-            const image = await ship.fetchImage(ShipImageKind.REMODEL)
+            const image = await ship.fetchImage('remodel' as ShipImageKind)
             ctx.drawImage(
               image,
               0, 3, image.width, image.height,
               -150, 0, image.width, image.height,
             )
           } catch (error) {
-            // ignore
+            console.warn(error)
           }
         },
         drawShipEquipOverlay: ({ ctx }) => {
