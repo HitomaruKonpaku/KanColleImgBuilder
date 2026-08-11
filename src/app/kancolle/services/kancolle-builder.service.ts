@@ -1,8 +1,7 @@
 import { Injectable, NgZone } from '@angular/core'
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar'
-import { DeckBuilder, generate } from 'gkcoi'
-import { DeckBuilderOptions, Item } from 'gkcoi/dist/type'
-import { toTranslateEquipmentName } from 'gkcoi/dist/utils'
+import { DeckBuilder, DrawHooks, generate } from 'gkcoi'
+import { DeckBuilderOptions, ShipImageKind } from 'gkcoi/dist/type'
 import { BehaviorSubject } from 'rxjs'
 import { KanColleConstant } from '../constants/kancolle.constant'
 import { gkcoiLang } from '../enums/gkcoi-lang.enum'
@@ -22,6 +21,7 @@ export class KanColleBuilderService {
     lbas: false,
     hideShipImage: false,
     extendEquipText: false,
+    extendLbas: true,
   }
 
   private readonly configSubject = new BehaviorSubject<KanColleBuilderConfig>(this.config)
@@ -157,52 +157,107 @@ export class KanColleBuilderService {
 
   private generateDeckBuilderOptions() {
     const theme = this.config.theme
-    const options: DeckBuilderOptions & Record<string, any> = {
+    const options: DeckBuilderOptions = {
       hideShipImage: !!this.config.hideShipImage,
     }
 
+    options.drawHooks = {
+      drawShipImage: async ({ ctx, ship }) => {
+        try {
+          const image = await ship.fetchImage(ShipImageKind.REMODEL)
+          ctx.drawImage(
+            image,
+            0, 3, image.width, image.height,
+            -100, 0, image.width, image.height,
+          )
+        } catch (error) {
+          // ignore
+        }
+      },
+      drawLbEquipText: ({ ctx, indexes, text }) => {
+        if (text.length >= 80) {
+          ctx.font = '9px Meiryo'
+        } else if (text.length >= 75) {
+          ctx.font = '10px Meiryo'
+        } else if (text.length >= 65) {
+          ctx.font = '11px Meiryo'
+        } else if (text.length >= 55) {
+          ctx.font = '12px Meiryo'
+        } else {
+          ctx.font = '14px Meiryo'
+        }
+        ctx.fillText(text, 35, 90 + indexes[0] * 182 + 23 * indexes[1])
+        ctx.font = '14px Meiryo'
+      },
+    }
+
     if (!options.hideShipImage && this.config.extendEquipText) {
-      options.shipImageOffsetX = -50
-      options.equipTextOffsetX = -200
-      options.equipOverlayText = {
-        getStyle: (ctx: CanvasRenderingContext2D) => {
+      const hooks: DrawHooks = {
+        drawShipImage: async ({ ctx, ship }) => {
+          try {
+            const image = await ship.fetchImage(ShipImageKind.REMODEL)
+            ctx.drawImage(
+              image,
+              0, 3, image.width, image.height,
+              -150, 0, image.width, image.height,
+            )
+          } catch (error) {
+            // ignore
+          }
+        },
+        drawShipEquipOverlay: ({ ctx }) => {
+          let gradient!: CanvasGradient
           if (theme === 'dark' || theme === 'dark-ex') {
-            const gradient = ctx.createLinearGradient(0, 65, 998, 65)
+            gradient = ctx.createLinearGradient(0, 65, 998, 65)
             gradient.addColorStop(0, '#1a1a1a00')
-            gradient.addColorStop(0.20, '#1a1a1a')
+            gradient.addColorStop(0.2, '#1a1a1a')
             gradient.addColorStop(0.8, '#1a1a1a')
             gradient.addColorStop(1, '#ffffff')
-            return gradient
           }
           if (theme === 'light' || theme === 'light-ex') {
-            const gradient = ctx.createLinearGradient(0, 65, 998, 65)
+            gradient = ctx.createLinearGradient(0, 65, 998, 65)
             gradient.addColorStop(0, '#fafafa00')
-            gradient.addColorStop(0.20, '#fafafa')
+            gradient.addColorStop(0.2, '#fafafa')
             gradient.addColorStop(0.8, '#fafafa')
             gradient.addColorStop(1, '#fafafa')
-            return gradient
           }
-          return null
+          if (gradient) {
+            ctx.fillStyle = gradient
+            ctx.fillRect(0, 0, 650, 176)
+          }
         },
-      }
-      options.equipItemText = {
-        getFont: (ctx: CanvasRenderingContext2D, item: Item, { items }) => {
-          const name = toTranslateEquipmentName(item.name, items)
-          if (name.length >= 80) {
-            return '9px Meiryo';
-          }
-          if (name.length >= 75) {
-            return '10px Meiryo';
-          }
-          if (name.length >= 65) {
-            return '11px Meiryo';
-          }
-          if (name.length >= 55) {
-            return '12px Meiryo';
-          }
-          return ctx.font
+        drawEquipImage: ({ ctx, index, image }) => {
+          ctx.drawImage(image, 189, 33 + 23 * index)
         },
+        drawEquipText: ({ ctx, index, text }) => {
+          if (text.length >= 80) {
+            ctx.font = '9px Meiryo'
+          } else if (text.length >= 75) {
+            ctx.font = '10px Meiryo'
+          } else if (text.length >= 65) {
+            ctx.font = '11px Meiryo'
+          } else if (text.length >= 55) {
+            ctx.font = '12px Meiryo'
+          } else {
+            ctx.font = '14px Meiryo'
+          }
+          ctx.fillText(text, 220, 52 + 23 * index)
+          ctx.font = '14px Meiryo'
+        },
+        drawEquipEmpty: ({ ctx, index, text }) => {
+          ctx.fillText(`(${text})`, 220, 52 + 23 * index)
+          ctx.fillText('-', 202, 53 + 23 * index)
+        },
+        drawEquipSlotNum: ({ ctx, index, text }) => {
+          ctx.fillText(text, 189, 52 + 23 * index)
+        },
+
       }
+      Object.assign(options.drawHooks, hooks)
+    }
+
+    if (this.config.extendLbas) {
+      options.lbasExtraWidth = 230 - 7 // -7 so that final canvas width is 1800
     }
 
     return options
