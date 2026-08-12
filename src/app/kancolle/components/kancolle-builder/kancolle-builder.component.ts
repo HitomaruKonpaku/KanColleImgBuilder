@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/co
 import { MatDrawer } from '@angular/material/sidenav'
 import { ActivatedRoute } from '@angular/router'
 import { DeckBuilder } from 'gkcoi'
+import { fromEvent, map, switchMap } from 'rxjs'
 import { BaseComponent } from '../../../base/base.component'
 import { KanColleBuilderService } from '../../services/kancolle-builder.service'
 
@@ -33,6 +34,18 @@ export class KanColleBuilderComponent extends BaseComponent {
 
   onInit() {
     this.initConfig()
+
+    fromEvent(window, 'hashchange')
+      .pipe(
+        map(ev => ev as HashChangeEvent),
+        map((ev) => {
+          const url = new URL(ev.newURL)
+          const str = url.hash.replace(/^#/, '')
+          return str
+        }),
+        switchMap((fragment) => this.initDeckFromDeck(fragment)),
+      )
+      .subscribe()
   }
 
   onAfterViewInit() {

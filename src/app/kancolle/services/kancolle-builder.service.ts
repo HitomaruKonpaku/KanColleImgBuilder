@@ -100,15 +100,15 @@ export class KanColleBuilderService {
     const { sortied, combined } = deck
     if ([1, 2, 3, 4].includes(sortied)) {
       if (combined) {
-        this.setConfig({ f1: true, f2: true })
+        this.setConfig({ f1: true, f2: true, f3: false, f4: false })
       } else {
-        this.setConfig({ f1: false })
+        this.setConfig({ f1: false, f2: false, f3: false, f4: false })
         this.setConfig({ ['f' + sortied]: true })
       }
     } else if (deck.f3?.s7) {
-      this.setConfig({ f1: false, f3: true })
+      this.setConfig({ f1: false, f2: false, f3: true, f4: false })
     } else if (combined) {
-      this.setConfig({ f1: true, f2: true })
+      this.setConfig({ f1: true, f2: true, f3: false, f4: false })
     }
   }
 
@@ -188,6 +188,10 @@ export class KanColleBuilderService {
         }
         ctx.fillText(text, 35, 90 + indexes[0] * 182 + 23 * indexes[1])
         ctx.font = '14px Meiryo'
+      },
+      drawComment: ({ ctx, defaultDraw }) => {
+        ctx.font = 'bold 18px monospace'
+        defaultDraw()
       },
     }
 
