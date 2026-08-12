@@ -135,7 +135,7 @@ export class KanColleBuilderService {
     this.configSubject.next(this.config)
   }
 
-  private generateDeckBuilder(baseDeckBuilder: any) {
+  private generateDeckBuilder(baseDeckBuilder: DeckBuilder & Record<string, any>) {
     const deckBuilder = { ...baseDeckBuilder }
     Object.entries(this.config).forEach(([key, value]) => {
       if (['lang', 'theme'].includes(key)) {
